@@ -1,0 +1,12 @@
+Live Predictions - 2026-03-31
+    ticker         region       close lr_signal rf_signal consensus_signal  lr_probability  rf_probability
+0  2222.SR  International   26.980000        UP        UP               UP        0.514547        0.543935
+1       BP  International   47.349998        UP        UP               UP        0.686214        0.570328
+2      CNQ         Canada   49.369999        UP        UP               UP        0.629633        0.563692
+3      COP             US  132.889999        UP        UP               UP        0.740685        0.618681
+4      CVE         Canada   26.570000        UP        UP               UP        0.705429        0.598809
+5      CVX             US  210.710007        UP        UP               UP        0.748277        0.640073
+6     SHEL  International   92.739998        UP        UP               UP        0.684705        0.597741
+7       SU         Canada   65.980003        UP        UP               UP        0.729282        0.636718
+8      TTE  International   91.550003        UP        UP               UP        0.734902        0.629792
+9      XOM             US  171.470001        UP        UP               UP        0.729969        0.620694

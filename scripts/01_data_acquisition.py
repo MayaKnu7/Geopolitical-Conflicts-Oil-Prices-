@@ -84,30 +84,37 @@ def download_stock_data():
 # ── Step 2: Download Oil Price Data (EIA) ───────────────────
 def download_oil_data():
     os.makedirs("data/raw/oil", exist_ok=True)
-
     print("\nDownloading WTI oil prices from EIA...")
 
-    url = "https://api.eia.gov/v2/petroleum/pri/spt/data/?api_key=DEMO_KEY&frequency=daily&data[0]=value&facets[series][]=RWTC&start=1989-01-01&sort[0][column]=period&sort[0][direction]=asc&offset=0&length=5000"
+    all_data = []
+    offsets  = [0, 5000, 10000]
 
-    try:
-        response = requests.get(url)
-        data     = response.json()
-        records  = data["response"]["data"]
-        df       = pd.DataFrame(records)
-        df       = df.rename(columns={"period": "date", "value": "wti_price"})
-        df       = df[["date", "wti_price"]]
-        df["date"] = pd.to_datetime(df["date"])
-        df["wti_price"] = pd.to_numeric(df["wti_price"], errors="coerce")
-        df = df.sort_values("date")
+    for offset in offsets:
+        url = f"https://api.eia.gov/v2/petroleum/pri/spt/data/?api_key=DEMO_KEY&frequency=daily&data[0]=value&facets[series][]=RWTC&start=1989-01-01&sort[0][column]=period&sort[0][direction]=asc&offset={offset}&length=5000"
+        try:
+            response = requests.get(url)
+            data     = response.json()
+            records  = data["response"]["data"]
+            if not records:
+                break
+            all_data.extend(records)
+            print(f"  Fetched {len(records)} records at offset {offset}")
+        except Exception as e:
+            print(f"  Error at offset {offset}: {e}")
+            break
 
-        local_path = "data/raw/oil/wti_oil_prices.csv"
-        df.to_csv(local_path, index=False)
-        print(f"Saved: {local_path}")
+    df = pd.DataFrame(all_data)
+    df = df.rename(columns={"period": "date", "value": "wti_price"})
+    df = df[["date", "wti_price"]]
+    df["date"]      = pd.to_datetime(df["date"])
+    df["wti_price"] = pd.to_numeric(df["wti_price"], errors="coerce")
+    df = df.drop_duplicates(subset=["date"])
+    df = df.sort_values("date")
 
-        upload_to_s3(local_path, "raw/oil/wti_oil_prices.csv")
-
-    except Exception as e:
-        print(f"Error downloading oil data: {e}")
+    local_path = "data/raw/oil/wti_oil_prices.csv"
+    df.to_csv(local_path, index=False)
+    print(f"Saved: {local_path} ({len(df)} rows)")
+    upload_to_s3(local_path, "raw/oil/wti_oil_prices.csv")
 
 # ── Step 3: Create Conflict Events Table ────────────────────
 def create_conflict_events():
