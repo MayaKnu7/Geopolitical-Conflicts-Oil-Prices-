@@ -1,0 +1,17 @@
+id,date,conflict_period,event_description,severity
+1,1990-08-02,First Gulf War,Iraq invades Kuwait,High
+2,1990-08-06,First Gulf War,UN imposes sanctions on Iraq,Medium
+3,1990-11-29,First Gulf War,UN authorizes force against Iraq,High
+4,1991-01-17,First Gulf War,Operation Desert Storm begins,High
+5,1991-02-28,First Gulf War,Ceasefire declared,High
+6,2002-11-08,Second Gulf War,UN resolution demands Iraq disarmament,Medium
+7,2003-03-20,Second Gulf War,US invasion of Iraq begins,High
+8,2003-04-09,Second Gulf War,Baghdad falls,High
+9,2003-05-01,Second Gulf War,Bush declares end of major combat operations,Medium
+10,2019-05-08,US-Iran,US withdraws from Iran nuclear deal,High
+11,2019-06-20,US-Iran,Iran shoots down US drone,High
+12,2020-01-03,US-Iran,Soleimani assassination,High
+13,2020-01-08,US-Iran,Iran retaliatory missile strikes on US bases,High
+14,2020-01-10,US-Iran,US imposes new sanctions on Iran,Medium
+15,2024-04-01,US-Iran,Israel strikes Iranian consulate in Syria,High
+16,2025-06-22,US-Iran,US strikes Iranian nuclear facilities,High
