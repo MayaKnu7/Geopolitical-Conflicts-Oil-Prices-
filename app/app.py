@@ -20,7 +20,7 @@ except ImportError:
 # ── Page Config ──────────────────────────────────────────────
 st.set_page_config(
     page_title="Geopolitical Conflict & Oil Stock Performance",
-    page_icon="🛢",
+    page_icon=":oil_drum:",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -267,7 +267,7 @@ def fetch_live_signals():
             if daily_return > 0:       score += 1
             if latest_close > ma10:    score += 1
             if ma10 > ma20:            score += 1
-            signal     = "UP ▲" if score >= 2 else "DOWN ▼"
+            signal     = "UP [+]" if score >= 2 else "DOWN [-]"
             confidence = round(50 + (score / 3) * 30, 1)
 
             rows.append({
@@ -317,14 +317,14 @@ model_df  = load_model_results()
 
 # ── SIDEBAR ──────────────────────────────────────────────────
 with st.sidebar:
-    st.markdown("## 🛢 Oil & Conflict")
+    st.markdown("## Oil & Conflict")
     st.markdown("<hr style='border-color:#1E2D45'>", unsafe_allow_html=True)
 
     page = st.radio("", [
-        "📊  Overview",
-        "📈  Historical Analysis",
-        "🤖  Model Results",
-        "⚡  Live Data",
+        "Overview",
+        "Historical Analysis",
+        "Model Results",
+        "Live Data",
     ], label_visibility="collapsed")
 
     st.markdown("<hr style='border-color:#1E2D45'>", unsafe_allow_html=True)
@@ -342,7 +342,7 @@ with st.sidebar:
 # ════════════════════════════════════════════════════════════
 # PAGE 1 — OVERVIEW
 # ════════════════════════════════════════════════════════════
-if page == "📊  Overview":
+if page == "Overview":
     st.markdown("# Geopolitical Conflict\n### & Oil Stock Performance")
     st.markdown("""
     <p style='color:#6B7FA3;max-width:700px'>
@@ -452,7 +452,7 @@ if page == "📊  Overview":
 # ════════════════════════════════════════════════════════════
 # PAGE 2 — HISTORICAL ANALYSIS
 # ════════════════════════════════════════════════════════════
-elif page == "📈  Historical Analysis":
+elif page == "Historical Analysis":
     st.markdown("# Historical Analysis")
     st.markdown("<hr style='border-color:#1E2D45'>", unsafe_allow_html=True)
 
@@ -543,7 +543,7 @@ elif page == "📈  Historical Analysis":
         fig_o.update_layout(**LAYOUT, height=300, xaxis_title="", yaxis_title="$/barrel")
         st.plotly_chart(fig_o, use_container_width=True)
     else:
-        st.info("ℹ️ WTI oil price data not available for this conflict period in the current dataset.")
+        st.info("WTI oil price data not available for this conflict period in the current dataset.")
 
     st.markdown("<hr style='border-color:#1E2D45'>", unsafe_allow_html=True)
 
@@ -611,7 +611,7 @@ elif page == "📈  Historical Analysis":
 # ════════════════════════════════════════════════════════════
 # PAGE 3 — MODEL RESULTS
 # ════════════════════════════════════════════════════════════
-elif page == "🤖  Model Results":
+elif page == "Model Results":
     st.markdown("# Model Results")
     st.markdown("""
     <p style='color:#6B7FA3'>
@@ -730,7 +730,7 @@ elif page == "🤖  Model Results":
 # ════════════════════════════════════════════════════════════
 # PAGE 4 — LIVE DATA
 # ════════════════════════════════════════════════════════════
-elif page == "⚡  Live Data":
+elif page == "Live Data":
     st.markdown("# Live Market Data")
     st.markdown(
         "<span class='live-dot'></span>"
@@ -739,7 +739,7 @@ elif page == "⚡  Live Data":
         "</span>",
         unsafe_allow_html=True
     )
-    st.warning("⚠️ For academic purposes only. Not financial advice.")
+    st.warning("For academic purposes only. Not financial advice.")
     st.markdown("<hr style='border-color:#1E2D45'>", unsafe_allow_html=True)
 
     # Live WTI oil price
@@ -831,7 +831,7 @@ elif page == "⚡  Live Data":
             fig_sig = px.pie(
                 sig_counts, names="Signal", values="Count",
                 color="Signal",
-                color_discrete_map={"UP ▲":"#2A9D8F","DOWN ▼":"#E63946"},
+                color_discrete_map={"UP [+]":"#2A9D8F","DOWN [-]":"#E63946"},
                 hole=0.55
             )
             fig_sig.update_layout(**LAYOUT, height=300,
