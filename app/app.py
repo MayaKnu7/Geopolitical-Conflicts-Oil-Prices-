@@ -20,7 +20,7 @@ except ImportError:
 # ── Page Config ──────────────────────────────────────────────
 st.set_page_config(
     page_title="Geopolitical Conflict & Oil Stock Performance",
-    page_icon="🛢",
+    page_icon=":oil_drum:",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -267,7 +267,7 @@ def fetch_live_signals():
             if daily_return > 0:       score += 1
             if latest_close > ma10:    score += 1
             if ma10 > ma20:            score += 1
-            signal     = "UP ▲" if score >= 2 else "DOWN ▼"
+            signal     = "UP [+]" if score >= 2 else "DOWN [-]"
             confidence = round(50 + (score / 3) * 30, 1)
 
             rows.append({
@@ -317,14 +317,15 @@ model_df  = load_model_results()
 
 # ── SIDEBAR ──────────────────────────────────────────────────
 with st.sidebar:
-    st.markdown("## 🛢 Oil & Conflict")
+    st.markdown("## Oil & Conflict")
     st.markdown("<hr style='border-color:#1E2D45'>", unsafe_allow_html=True)
 
     page = st.radio("", [
-        "📊  Overview",
-        "📈  Historical Analysis",
-        "🤖  Model Results",
-        "⚡  Live Data",
+        "Overview",
+        "Historical Analysis",
+        "Model Results",
+        "Live Data",
+        "Analysis Findings",
     ], label_visibility="collapsed")
 
     st.markdown("<hr style='border-color:#1E2D45'>", unsafe_allow_html=True)
@@ -342,7 +343,7 @@ with st.sidebar:
 # ════════════════════════════════════════════════════════════
 # PAGE 1 — OVERVIEW
 # ════════════════════════════════════════════════════════════
-if page == "📊  Overview":
+if page == "Overview":
     st.markdown("# Geopolitical Conflict\n### & Oil Stock Performance")
     st.markdown("""
     <p style='color:#6B7FA3;max-width:700px'>
@@ -452,7 +453,7 @@ if page == "📊  Overview":
 # ════════════════════════════════════════════════════════════
 # PAGE 2 — HISTORICAL ANALYSIS
 # ════════════════════════════════════════════════════════════
-elif page == "📈  Historical Analysis":
+elif page == "Historical Analysis":
     st.markdown("# Historical Analysis")
     st.markdown("<hr style='border-color:#1E2D45'>", unsafe_allow_html=True)
 
@@ -543,7 +544,7 @@ elif page == "📈  Historical Analysis":
         fig_o.update_layout(**LAYOUT, height=300, xaxis_title="", yaxis_title="$/barrel")
         st.plotly_chart(fig_o, use_container_width=True)
     else:
-        st.info("ℹ️ WTI oil price data not available for this conflict period in the current dataset.")
+        st.info("WTI oil price data not available for this conflict period in the current dataset.")
 
     st.markdown("<hr style='border-color:#1E2D45'>", unsafe_allow_html=True)
 
@@ -611,7 +612,7 @@ elif page == "📈  Historical Analysis":
 # ════════════════════════════════════════════════════════════
 # PAGE 3 — MODEL RESULTS
 # ════════════════════════════════════════════════════════════
-elif page == "🤖  Model Results":
+elif page == "Model Results":
     st.markdown("# Model Results")
     st.markdown("""
     <p style='color:#6B7FA3'>
@@ -730,7 +731,7 @@ elif page == "🤖  Model Results":
 # ════════════════════════════════════════════════════════════
 # PAGE 4 — LIVE DATA
 # ════════════════════════════════════════════════════════════
-elif page == "⚡  Live Data":
+elif page == "Live Data":
     st.markdown("# Live Market Data")
     st.markdown(
         "<span class='live-dot'></span>"
@@ -739,7 +740,7 @@ elif page == "⚡  Live Data":
         "</span>",
         unsafe_allow_html=True
     )
-    st.warning("⚠️ For academic purposes only. Not financial advice.")
+    st.warning("For academic purposes only. Not financial advice.")
     st.markdown("<hr style='border-color:#1E2D45'>", unsafe_allow_html=True)
 
     # Live WTI oil price
@@ -831,7 +832,7 @@ elif page == "⚡  Live Data":
             fig_sig = px.pie(
                 sig_counts, names="Signal", values="Count",
                 color="Signal",
-                color_discrete_map={"UP ▲":"#2A9D8F","DOWN ▼":"#E63946"},
+                color_discrete_map={"UP [+]":"#2A9D8F","DOWN [-]":"#E63946"},
                 hole=0.55
             )
             fig_sig.update_layout(**LAYOUT, height=300,
@@ -948,3 +949,232 @@ elif page == "⚡  Live Data":
                     fig_comp.add_hline(y=0, line_color="rgba(255,255,255,0.2)", line_dash="dot")
                     fig_comp.update_layout(**LAYOUT, height=320)
                     st.plotly_chart(fig_comp, use_container_width=True)
+# ════════════════════════════════════════════════════════════
+# PAGE 5 — RESEARCH FINDINGS
+# ════════════════════════════════════════════════════════════
+elif page == "Analysis Findings":
+    st.markdown("# Analysis Findings")
+    st.markdown("""
+    <p style='color:#6B7FA3;max-width:800px'>
+    Our three research questions examined using historical stock and oil price data
+    across the First Gulf War (1990–1991), Second Gulf War (2003), and current
+    US–Iran tensions (2019–2026). Dashboards built in Tableau from pipeline outputs.
+    </p>
+    """, unsafe_allow_html=True)
+    st.markdown("<hr style='border-color:#1E2D45'>", unsafe_allow_html=True)
+
+    # ── CSS for finding cards ────────────────────────────────
+    st.markdown("""
+    <style>
+    .finding-card {
+        background: linear-gradient(135deg, #0F1623 0%, #141D2E 100%);
+        border: 1px solid #1E2D45;
+        border-left: 4px solid #E63946;
+        border-radius: 10px;
+        padding: 22px 28px;
+        margin: 16px 0 24px 0;
+    }
+    .finding-card.q2 { border-left-color: #F4A261; }
+    .finding-card.q3 { border-left-color: #4B9FFF; }
+    .finding-label {
+        color: #6B7FA3;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+    .finding-question {
+        color: #E8EDF5;
+        font-family: 'Space Mono', monospace;
+        font-size: 1.0rem;
+        font-weight: 700;
+        margin-bottom: 14px;
+        line-height: 1.5;
+    }
+    .finding-answer {
+        color: #A8B8D0;
+        font-size: 0.92rem;
+        line-height: 1.8;
+    }
+    .finding-answer b { color: #E8EDF5; }
+    .finding-answer .highlight-red   { color: #E63946; font-weight: 600; }
+    .finding-answer .highlight-amber { color: #F4A261; font-weight: 600; }
+    .finding-answer .highlight-blue  { color: #4B9FFF; font-weight: 600; }
+    .dashboard-label {
+        color: #6B7FA3;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        font-weight: 600;
+        margin: 18px 0 10px 0;
+    }
+    .tableau-note {
+        color: #3A5070;
+        font-size: 0.78rem;
+        font-style: italic;
+        margin-top: 8px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    import streamlit.components.v1 as components
+
+    def tableau_embed(name, height=850):
+        html = f"""
+        <div class='tableauPlaceholder' style='position:relative;width:100%'>
+          <object class='tableauViz' style='display:none;'>
+            <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
+            <param name='embed_code_version' value='3' />
+            <param name='site_root' value='' />
+            <param name='name' value='{name}' />
+            <param name='tabs' value='no' />
+            <param name='toolbar' value='yes' />
+            <param name='animate_transition' value='yes' />
+            <param name='display_static_image' value='yes' />
+            <param name='display_spinner' value='yes' />
+            <param name='display_overlay' value='yes' />
+            <param name='display_count' value='yes' />
+            <param name='language' value='en-US' />
+          </object>
+        </div>
+        <script type='text/javascript'>
+          var divElement = document.querySelector('.tableauPlaceholder');
+          var vizElement = divElement.getElementsByTagName('object')[0];
+          vizElement.style.width  = '100%';
+          vizElement.style.height = '{height}px';
+          var scriptElement = document.createElement('script');
+          scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+          vizElement.parentNode.insertBefore(scriptElement, vizElement);
+        </script>
+        """
+        components.html(html, height=height + 20, scrolling=False)
+
+    # ── QUESTION 1 ───────────────────────────────────────────
+    st.markdown("""
+    <div class='finding-card'>
+        <div class='finding-label'>Analytics Question 1</div>
+        <div class='finding-question'>
+            To what extent can oil price and oil &amp; gas stock patterns observed
+            during the First Gulf War predict market behavior during the Second Gulf War?
+        </div>
+        <div class='finding-answer'>
+            Our analysis of the <b>7 companies with data across both conflicts</b>
+            (BP, COP, CVX, SHEL, SU, TTE, XOM) reveals a
+            <span class='highlight-red'>moderate correlation of r = 0.57</span>
+            between average daily returns during GW1 and GW2 — suggesting partial
+            but not strong predictive power. <b>SHEL was the most consistent</b>
+            performer, posting positive returns in both conflicts (+0.09%/day GW1,
+            +0.16%/day GW2). <b>CVX was the most inconsistent</b>, slightly negative
+            in GW1 and strongly negative in GW2 (-0.14%/day). Critically, the oil
+            price environment differed dramatically:
+            <span class='highlight-red'>WTI spiked +48% during GW1</span> (from
+            $19.62 to $29.04/barrel) but only
+            <span class='highlight-amber'>+3.2% during GW2</span> ($27.67 to
+            $28.56/barrel) — meaning stocks in GW2 faced a very different
+            macroeconomic backdrop, which limits how well GW1 patterns transfer.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<div class='dashboard-label'>Dashboard 1 — Gulf War I vs II: Can History Predict History?</div>",
+                unsafe_allow_html=True)
+
+    tableau_embed("dashboards_acc3/Dashboard1", height=850)
+
+    st.markdown("<p class='tableau-note'>Charts: Stock % price change during conflict (GW1 vs GW2) · Avg daily return by ticker · WTI oil price indexed timeline · Price movement comparison</p>",
+                unsafe_allow_html=True)
+
+    st.markdown("<hr style='border-color:#1E2D45'>", unsafe_allow_html=True)
+
+    # ── QUESTION 2 ───────────────────────────────────────────
+    st.markdown("""
+    <div class='finding-card q2'>
+        <div class='finding-label'>Analytics Question 2</div>
+        <div class='finding-question'>
+            How do oil prices and stock markets respond before, during,
+            and after major geopolitical conflict events?
+        </div>
+        <div class='finding-answer'>
+            A clear <b>before/during/after pattern</b> exists, though it differs
+            by conflict. In <span class='highlight-red'>Gulf War I</span>, volatility
+            was highest <i>before</i> the conflict (3.57) and remained elevated
+            <i>during</i> (3.54), then dropped <i>after</i> — a classic
+            uncertainty-to-resolution pattern. In
+            <span class='highlight-amber'>Gulf War II</span>, volatility peaked
+            <i>before</i> the invasion (1.88) and dropped during and after,
+            suggesting markets had already priced in the conflict. The
+            <span class='highlight-blue'>US–Iran</span> Soleimani period showed
+            the sharpest single-period return drop at
+            <b>-0.18%/day during the conflict window</b>. The heatmap reveals
+            <b>CVE (-0.811) and CVX (-0.597)</b> as the most severely impacted
+            during the Soleimani event, while <b>CNQ (+0.178) and SHEL (+0.067)</b>
+            proved most resilient.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<div class='dashboard-label'>Dashboard 2 — Market Behavior Before, During &amp; After Geopolitical Conflict</div>",
+                unsafe_allow_html=True)
+
+    tableau_embed("dashboards_acc2/Dashboard2", height=850)
+
+    st.markdown("<p class='tableau-note'>Charts: Stock volatility by phase · Avg WTI oil price by phase · Daily return heatmap by ticker &amp; phase · Avg return by conflict phase</p>",
+                unsafe_allow_html=True)
+
+    st.markdown("<hr style='border-color:#1E2D45'>", unsafe_allow_html=True)
+
+    # ── QUESTION 3 ───────────────────────────────────────────
+    st.markdown("""
+    <div class='finding-card q3'>
+        <div class='finding-label'>Analytics Question 3</div>
+        <div class='finding-question'>
+            Can patterns learned from historical conflicts provide insight into
+            potential market behavior during the current US–Iran tensions?
+        </div>
+        <div class='finding-answer'>
+            Historical patterns provide <b>partial but meaningful guidance</b>.
+            Since the April 2024 Israel-Iran consulate strike,
+            <span class='highlight-blue'>Canadian stocks have outperformed</span>
+            — with <b>SU posting the highest avg daily return (+0.068%)</b> and
+            SHEL second (+0.045%) — consistent with the historical pattern of
+            Canadian and international majors being more resilient than US
+            counterparts during Middle East escalation. However,
+            <span class='highlight-red'>Saudi Aramco (2222.SR) and COP have
+            dipped slightly</span>, diverging from what historical patterns would
+            predict. Volatility during the Soleimani event was
+            <b>lower than during both Gulf Wars</b> (1.07 vs 3.54 GW1 / 1.35 GW2),
+            suggesting markets have become more resilient to Middle East conflict
+            signals over time — though the June 2025 US strikes on Iranian nuclear
+            facilities represent a significant new escalation whose full market
+            impact remains unfolding.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<div class='dashboard-label'>Dashboard 3 — Current US–Iran Tensions: What History Suggests</div>",
+                unsafe_allow_html=True)
+
+    tableau_embed("dashboards_acc/Dashboard3", height=900)
+
+    st.markdown("<p class='tableau-note'>Charts: Oil &amp; gas stock prices 2019–2025 with event annotations · Avg return since April 2024 · Return by region · Conflict-period volatility historical context</p>",
+                unsafe_allow_html=True)
+
+    st.markdown("<hr style='border-color:#1E2D45'>", unsafe_allow_html=True)
+
+    # ── KEY TAKEAWAYS SUMMARY ────────────────────────────────
+    st.markdown("#### Overall Takeaways")
+    st.markdown("""
+    <div style='color:#A8B8D0;line-height:2.2;max-width:800px'>
+    ▸ GW1 patterns have <b style='color:#E63946'>moderate predictive value (r = 0.57)</b>
+      for GW2 — enough to inform expectations but not reliable enough to trade on<br>
+    ▸ The <b style='color:#F4A261'>before/during/after market pattern is real</b>
+      but varies significantly by conflict — GW1 spiked oil, GW2 did not<br>
+    ▸ <b style='color:#4B9FFF'>Canadian stocks (SU, CNQ)</b> consistently show the
+      most resilience across all three conflict periods<br>
+    ▸ Volatility during geopolitical events has <b style='color:#2A9D8F'>decreased
+      over time</b> — markets appear to price in conflict faster than they did in 1990<br>
+    ▸ <b style='color:#E63946'>Data limitation:</b> EIA oil data ends in 2008;
+      US–Iran oil figures are approximated from public WTI records
+    </div>
+    """, unsafe_allow_html=True)

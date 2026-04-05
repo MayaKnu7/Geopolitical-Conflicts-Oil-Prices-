@@ -56,6 +56,7 @@ This project analyzes whether patterns in oil prices and stock market behavior o
 03_eda.py                →   Exploratory analysis across conflict periods
 04_modeling.py           →   Train on Gulf War I, test on Gulf War II
 05_live_predictions.py   →   Apply model to live U.S.–Iran data
+06_export_tableau.py     →   Export data for dashboards
 app/app.py               →   Streamlit dashboard
 ```
 
@@ -81,7 +82,7 @@ app/app.py               →   Streamlit dashboard
 | PostgreSQL (AWS RDS) | Structured storage of cleaned datasets |
 | AWS S3 | Raw and processed dataset storage |
 | Streamlit | Interactive web dashboard |
-| Power BI | Reporting dashboard — conflict period comparisons and model predictions vs. actuals |
+| Tableau | Reporting dashboard — conflict period comparisons and model predictions vs. actuals |
 
 ---
 
