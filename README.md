@@ -1,6 +1,6 @@
 # Geopolitical Conflict and Oil Stock Performance
 
-**Project Proposal — Group 26**  
+**Project — Group 26**  
 Sana Shah (94945664), Maya Knutsvig (17950502), Illina Islam (58189903)
 
 ---
@@ -8,6 +8,8 @@ Sana Shah (94945664), Maya Knutsvig (17950502), Illina Islam (58189903)
 ## Overview
 
 This project analyzes whether patterns in oil prices and stock market behavior observed during the **First Gulf War (1990–1991)** can be used to predict market responses during the **Second Gulf War (2003)** for 10 oil and gas companies. Based on these findings, the project explores whether similar patterns can provide insight into potential market reactions during current **U.S.–Iran geopolitical tensions**.
+
+[Take a look!](http://56.112.29.64:8501)
 
 ---
 
