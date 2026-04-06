@@ -85,6 +85,7 @@ app/app.py               →   Streamlit dashboard
 | AWS S3 | Raw and processed dataset storage |
 | Streamlit | Interactive web dashboard |
 | Tableau | Reporting dashboard — conflict period comparisons and model predictions vs. actuals |
+| AWS EC2 | Showcase/Deployment |
 
 ---
 
