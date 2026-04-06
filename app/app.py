@@ -103,7 +103,8 @@ h1, h2, h3 {
 # DATA LOADING — CSV first, DB fallback
 # ════════════════════════════════════════════════════════════
 
-DATA_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 def find_file(name):
     """Look for CSV in same dir as app.py or a data/ subfolder."""
