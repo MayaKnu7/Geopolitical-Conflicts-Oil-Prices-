@@ -107,10 +107,10 @@ DATA_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def find_file(name):
-    """Look for CSV in same dir as app.py or a data/ subfolder."""
     for path in [
         os.path.join(DATA_DIR, name),
         os.path.join(DATA_DIR, "data", name),
+        os.path.join(DATA_DIR, "data", "cleaned", name),
         os.path.join(DATA_DIR, "data", "processed", name),
     ]:
         if os.path.exists(path):
