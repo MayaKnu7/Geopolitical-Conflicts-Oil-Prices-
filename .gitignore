@@ -205,5 +205,22 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+# Legacy AWS RDS certificate (no longer needed)
 global-bundle.pem
-data/
+
+# Streamlit secrets (the Neon DATABASE_URL lives here locally; never commit)
+.streamlit/secrets.toml
+
+# macOS
+.DS_Store
+
+# Data: ignore everything except the small cleaned CSVs the app uses as a fallback
+data/*
+!data/cleaned/
+data/cleaned/*
+!data/cleaned/all_stocks_cleaned.csv
+!data/cleaned/conflict_events_cleaned.csv
+!data/cleaned/model_results.csv
+!data/cleaned/oil/
+data/cleaned/oil/*
+!data/cleaned/oil/wti_oil_prices_cleaned.csv

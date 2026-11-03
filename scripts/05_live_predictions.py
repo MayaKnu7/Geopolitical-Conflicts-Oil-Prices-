@@ -24,15 +24,7 @@ TICKERS = {
 ALL_TICKERS = [t for region in TICKERS.values() for t in region]
 
 # ── Database Connection ─────────────────────────────────────
-def get_db_connection():
-    return psycopg2.connect(
-        host        = os.getenv("DB_HOST"),
-        dbname      = os.getenv("DB_NAME"),
-        user        = os.getenv("DB_USER"),
-        password    = os.getenv("DB_PASSWORD"),
-        sslmode     = "verify-full",
-        sslrootcert = "./global-bundle.pem"
-    )
+from db_config import get_db_connection  # Neon/Postgres via DATABASE_URL
 
 # ── Load Trained Models ─────────────────────────────────────
 def load_models():

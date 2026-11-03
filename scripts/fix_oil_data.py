@@ -6,15 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-def get_db_connection():
-    return psycopg2.connect(
-        host        = os.getenv("DB_HOST"),
-        dbname      = os.getenv("DB_NAME"),
-        user        = os.getenv("DB_USER"),
-        password    = os.getenv("DB_PASSWORD"),
-        sslmode     = "verify-full",
-        sslrootcert = "./global-bundle.pem"
-    )
+from db_config import get_db_connection  # Neon/Postgres via DATABASE_URL
 
 def reload_oil_data():
     df = pd.read_csv("data/raw/oil/wti_oil_prices.csv")

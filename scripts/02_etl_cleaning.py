@@ -4,7 +4,10 @@
 
 import pandas as pd
 import numpy as np
-import boto3
+try:
+    import boto3
+except ImportError:
+    boto3 = None
 import psycopg2
 import os
 from dotenv import load_dotenv
@@ -46,26 +49,24 @@ REGION_MAP = {
 }
 
 # ── S3 Client ───────────────────────────────────────────────
-s3 = boto3.client(
-    "s3",
-    aws_access_key_id     = os.getenv("AWS_ACCESS_KEY"),
-    aws_secret_access_key = os.getenv("AWS_SECRET_KEY"),
-    region_name           = "ca-west-1"
-)
+# S3 is optional now (the project no longer depends on AWS). Set AWS_ACCESS_KEY and
+# AWS_SECRET_KEY in .env to re-enable uploads.
+s3 = None
+if boto3 is not None and os.getenv("AWS_ACCESS_KEY"):
+    s3 = boto3.client(
+        "s3",
+        aws_access_key_id     = os.getenv("AWS_ACCESS_KEY"),
+        aws_secret_access_key = os.getenv("AWS_SECRET_KEY"),
+        region_name           = "ca-west-1"
+    )
 
 # ── Database Connection ─────────────────────────────────────
-def get_db_connection():
-    return psycopg2.connect(
-        host     = os.getenv("DB_HOST"),
-        dbname   = os.getenv("DB_NAME"),
-        user     = os.getenv("DB_USER"),
-        password = os.getenv("DB_PASSWORD"),
-        sslmode  = "verify-full",
-        sslrootcert = "./global-bundle.pem"
-    )
+from db_config import get_db_connection  # Neon/Postgres via DATABASE_URL
 
 # ── Helper: Upload to S3 ────────────────────────────────────
 def upload_to_s3(local_path, s3_key):
+    if s3 is None:
+        return  # S3 disabled
     s3.upload_file(local_path, S3_BUCKET, s3_key)
     print(f"  Uploaded to S3: {s3_key}")
 

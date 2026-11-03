@@ -81,11 +81,11 @@ app/app.py               →   Streamlit dashboard
 | Tool | Purpose |
 | --- | --- |
 | Python (pandas, numpy, scikit-learn, yfinance) | Data acquisition, ETL, EDA, modeling |
-| PostgreSQL (AWS RDS) | Structured storage of cleaned datasets |
-| AWS S3 | Raw and processed dataset storage |
+| PostgreSQL (Neon, free tier) | Structured storage of cleaned datasets |
+| Git + CSV files | Raw and processed dataset storage (cleaned CSVs are kept in `data/cleaned/` as the app's fallback) |
 | Streamlit | Interactive web dashboard |
 | Tableau | Reporting dashboard — conflict period comparisons and model predictions vs. actuals |
-| AWS EC2 | Showcase/Deployment |
+| Streamlit Community Cloud | Showcase/Deployment (free) |
 
 ---
 

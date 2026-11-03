@@ -16,15 +16,7 @@ load_dotenv()
 os.makedirs("reports/eda", exist_ok=True)
 
 # ── Database Connection ─────────────────────────────────────
-def get_db_connection():
-    return psycopg2.connect(
-        host        = os.getenv("DB_HOST"),
-        dbname      = os.getenv("DB_NAME"),
-        user        = os.getenv("DB_USER"),
-        password    = os.getenv("DB_PASSWORD"),
-        sslmode     = "verify-full",
-        sslrootcert = "./global-bundle.pem"
-    )
+from db_config import get_db_connection  # Neon/Postgres via DATABASE_URL
 
 # ── Helper: Load from DB ────────────────────────────────────
 def load_data():

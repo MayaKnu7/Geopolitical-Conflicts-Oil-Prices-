@@ -5,7 +5,10 @@
 import yfinance as yf
 import pandas as pd
 import requests
-import boto3
+try:
+    import boto3
+except ImportError:
+    boto3 = None
 import os
 from dotenv import load_dotenv
 
@@ -30,15 +33,21 @@ GULF_WAR_EXCLUDE = ["CVE", "2222.SR"]
 S3_BUCKET = "geo-conflicts-oil-prices-data-319279229929-ca-west-1-an"
 
 # ── S3 Client ───────────────────────────────────────────────
-s3 = boto3.client(
-    "s3",
-    aws_access_key_id     = os.getenv("AWS_ACCESS_KEY"),
-    aws_secret_access_key = os.getenv("AWS_SECRET_KEY"),
-    region_name           = "ca-west-1"
-)
+# S3 is optional now (the project no longer depends on AWS). Set AWS_ACCESS_KEY and
+# AWS_SECRET_KEY in .env to re-enable uploads.
+s3 = None
+if boto3 is not None and os.getenv("AWS_ACCESS_KEY"):
+    s3 = boto3.client(
+        "s3",
+        aws_access_key_id     = os.getenv("AWS_ACCESS_KEY"),
+        aws_secret_access_key = os.getenv("AWS_SECRET_KEY"),
+        region_name           = "ca-west-1"
+    )
 
 # ── Helper: Upload to S3 ────────────────────────────────────
 def upload_to_s3(local_path, s3_key):
+    if s3 is None:
+        return  # S3 disabled
     s3.upload_file(local_path, S3_BUCKET, s3_key)
     print(f"Uploaded to S3: {s3_key}")
 

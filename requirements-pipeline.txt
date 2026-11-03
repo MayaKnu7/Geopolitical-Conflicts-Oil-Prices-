@@ -1,0 +1,8 @@
+# Extra packages for running the data pipeline scripts in scripts/ locally.
+# Install with: pip install -r requirements-pipeline.txt
+-r requirements.txt
+scikit-learn==1.7.2
+matplotlib==3.10.8
+seaborn==0.13.2
+requests==2.33.1
+# boto3  # only if you re-enable S3 uploads in scripts 01 and 02

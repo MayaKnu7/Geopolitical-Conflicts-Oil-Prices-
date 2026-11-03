@@ -100,7 +100,7 @@ h1, h2, h3 {
 """, unsafe_allow_html=True)
 
 # ════════════════════════════════════════════════════════════
-# DATA LOADING — CSV first, DB fallback
+# DATA LOADING — Postgres (Neon) first, CSV fallback
 # ════════════════════════════════════════════════════════════
 
 DATA_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -111,58 +111,73 @@ def find_file(name):
         os.path.join(DATA_DIR, name),
         os.path.join(DATA_DIR, "data", name),
         os.path.join(DATA_DIR, "data", "cleaned", name),
+        os.path.join(DATA_DIR, "data", "cleaned", "oil", name),
         os.path.join(DATA_DIR, "data", "processed", name),
     ]:
         if os.path.exists(path):
             return path
     return None
 
-@st.cache_resource
-def get_db_connection():
+def _get_database_url():
+    """Postgres (Neon) connection string from Streamlit secrets or the environment."""
+    try:
+        url = st.secrets["DATABASE_URL"]
+        if url:
+            return str(url)
+    except Exception:
+        pass
+    return os.getenv("DATABASE_URL")
+
+
+def query_db(sql):
+    """Run a read-only query on the database.
+
+    Opens a short-lived connection each time (Neon suspends idle databases, so a
+    long-lived cached connection would go stale). Returns a DataFrame, or None if
+    the database is not configured or unreachable -- callers then use the CSVs.
+    """
     if not DB_AVAILABLE:
         return None
+    url = _get_database_url()
+    if not url:
+        return None
     try:
-        conn = psycopg2.connect(
-            host=os.getenv("DB_HOST"),
-            dbname=os.getenv("DB_NAME"),
-            user=os.getenv("DB_USER"),
-            password=os.getenv("DB_PASSWORD"),
-            sslmode="verify-full",
-            sslrootcert="./global-bundle.pem",
-            connect_timeout=5
-        )
-        return conn
+        conn = psycopg2.connect(url, connect_timeout=10)
     except Exception:
         return None
+    try:
+        with conn.cursor() as cur:
+            cur.execute(sql)
+            cols = [d[0] for d in cur.description]
+            return pd.DataFrame.from_records(cur.fetchall(), columns=cols, coerce_float=True)
+    except Exception:
+        return None
+    finally:
+        conn.close()
+
 
 @st.cache_data(ttl=3600)
 def load_stock_data():
-    conn = get_db_connection()
-    if conn:
-        try:
-            df = pd.read_sql("SELECT * FROM stock_data", conn)
-            df["date"] = pd.to_datetime(df["date"])
-            return df
-        except Exception:
-            pass
+    df = query_db("SELECT * FROM stock_data")
+    if df is not None and not df.empty:
+        df["date"] = pd.to_datetime(df["date"])
+        df.attrs["source"] = "database"
+        return df
     # CSV fallback
     path = find_file("all_stocks_cleaned.csv")
     if path:
         df = pd.read_csv(path)
         df["date"] = pd.to_datetime(df["date"])
+        df.attrs["source"] = "csv"
         return df
     return pd.DataFrame()
 
 @st.cache_data(ttl=3600)
 def load_oil_data():
-    conn = get_db_connection()
-    if conn:
-        try:
-            df = pd.read_sql("SELECT * FROM oil_prices", conn)
-            df["date"] = pd.to_datetime(df["date"])
-            return df
-        except Exception:
-            pass
+    df = query_db("SELECT * FROM oil_prices")
+    if df is not None and not df.empty:
+        df["date"] = pd.to_datetime(df["date"])
+        return df
     path = find_file("wti_oil_prices_cleaned.csv")
     if path:
         df = pd.read_csv(path)
@@ -172,14 +187,10 @@ def load_oil_data():
 
 @st.cache_data(ttl=3600)
 def load_events_data():
-    conn = get_db_connection()
-    if conn:
-        try:
-            df = pd.read_sql("SELECT * FROM conflict_events", conn)
-            df["date"] = pd.to_datetime(df["date"])
-            return df
-        except Exception:
-            pass
+    df = query_db("SELECT * FROM conflict_events")
+    if df is not None and not df.empty:
+        df["date"] = pd.to_datetime(df["date"])
+        return df
     path = find_file("conflict_events_cleaned.csv")
     if path:
         df = pd.read_csv(path)
@@ -189,12 +200,9 @@ def load_events_data():
 
 @st.cache_data(ttl=3600)
 def load_model_results():
-    conn = get_db_connection()
-    if conn:
-        try:
-            return pd.read_sql("SELECT * FROM model_results", conn)
-        except Exception:
-            pass
+    df = query_db("SELECT * FROM model_results")
+    if df is not None and not df.empty:
+        return df
     path = find_file("model_results.csv")
     if path:
         return pd.read_csv(path)
@@ -319,6 +327,8 @@ model_df  = load_model_results()
 # ── SIDEBAR ──────────────────────────────────────────────────
 with st.sidebar:
     st.markdown("## Oil & Conflict")
+    st.caption("Data source: " + ("Postgres database" if stock_df.attrs.get("source") == "database"
+                                  else "bundled CSV files"))
     st.markdown("<hr style='border-color:#1E2D45'>", unsafe_allow_html=True)
 
     page = st.radio("", [
@@ -1175,7 +1185,8 @@ elif page == "Analysis Findings":
       most resilience across all three conflict periods<br>
     ▸ Volatility during geopolitical events has <b style='color:#2A9D8F'>decreased
       over time</b> — markets appear to price in conflict faster than they did in 1990<br>
-    ▸ <b style='color:#E63946'>Data limitation:</b> EIA oil data ends in 2008;
-      US–Iran oil figures are approximated from public WTI records
+    ▸ <b style='color:#E63946'>Data limitation:</b> oil prices are EIA daily WTI spot
+      prices (1989 – March 2026); CVE and 2222.SR postdate the Gulf Wars and CNQ has no
+      GW1 data, so only 7 of 10 tickers cover all three conflict periods
     </div>
     """, unsafe_allow_html=True)
